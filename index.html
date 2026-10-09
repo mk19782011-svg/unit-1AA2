@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الامتحان الأول - المعلم محمد تيسير الخرشة</title>
+    <style>
+        body {
+            background-color: #f0f4f8;
+            color: #1f2937;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 15px;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        .container {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 750px;
+            padding: 25px;
+            border: 1px solid #cbd5e1;
+        }
+
+        .text-center { text-align: center; }
+
+        h1 { color: #1e3a8a; font-size: 22px; margin-bottom: 8px; }
+        h2 { color: #3b82f6; font-size: 18px; margin-bottom: 20px; }
+
+        .input-group { margin-bottom: 20px; text-align: right; }
+        .input-group label { display: block; margin-bottom: 8px; font-weight: bold; }
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        .btn {
+            background-color: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn:hover { background-color: #3b82f6; }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #f0f4f8;
+            padding-bottom: 10px;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            background-color: #e2e8f0;
+            height: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: #3b82f6;
+            width: 0%;
+        }
+
+        .reading-box {
+            background-color: #f8fafc;
+            border-right: 4px solid #1e3a8a;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+            max-height: 200px;
+            overflow-y: auto;
+            direction: ltr;
+            text-align: left;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .question-title {
+            font-size: 17px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            direction: ltr;
+            text-align: left;
+        }
+
+        .target-word {
+            text-decoration: underline;
+            font-weight: bold;
+            background-color: #fef08a;
+            padding: 0 4px;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 25px;
+            direction: ltr;
+        }
+
+        .option-btn {
+            background-color: #fff;
+            border: 2px solid #cbd5e1;
+            padding: 12px;
+            border-radius: 6px;
+            text-align: left;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        .option-btn.selected {
+            border-color: #1e3a8a;
+            background-color: #dbeafe;
+            font-weight: bold;
+        }
+
+        .review-item {
+            background-color: #f8fafc;
+            border: 1px solid #cbd5e1;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            direction: ltr;
+            text-align: left;
+        }
+
+        .review-item.correct { border-left: 5px solid #10b981; }
+        .review-item.incorrect { border-left: 5px solid #ef4444; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- شاشة الغلاف -->
+    <div id="cover-screen" class="text-center">
+        <p style="color: #64748b; font-size: 13px;">THE HASHEMITE KINGDOM OF JORDAN - MINISTRY OF EDUCATION</p>
+        <h1>GENERAL SECONDARY CERTIFICATE EXAMINATION</h1>
+        <h2>الامتحان الأول - المعلم محمد تيسير الخرشة</h2>
+        <hr style="margin-bottom: 20px; border: 0; border-top: 1px solid #cbd5e1;">
+        <div class="input-group">
+            <label for="student-name">اسم الطالب الثلاثي / الرباعي:</label>
+            <input type="text" id="student-name" placeholder="أدخل اسمك هنا للبدء...">
+        </div>
+        <button class="btn" onclick="startExamNow()">بدء الامتحان</button>
+    </div>
+
+    <!-- شاشة الأسئلة -->
+    <div id="quiz-screen" style="display: none;">
+        <div class="quiz-header">
+            <div><strong>الطالب: </strong><span id="st-name-display"></span></div>
+            <div><strong>السؤال: </strong><span id="q-num">1</span> / 36</div>
+        </div>
+        
+        <div class="progress-bar-container">
+            <div id="p-bar" class="progress-bar"></div>
+        </div>
+
+        <div id="reading-text" class="reading-box" style="display: none;">
+            <strong>Read the text carefully, and then answer the question:</strong><br><br>
+            As a child, Jane loved reading books about a fictional character called Dr Dolittle, who could talk to animals. Perhaps this is what inspired her to go to Africa when <u class="target-word">she</u> was in her 20s. <u class="target-word">Here</u> she came across a scientist who asked Jane if she might want a job observing chimpanzees in the wild. She immediately said yes. She went with her mother to the shores of Lake Tanganyika in Tanzania to start her new job, and it was not long before she made out a group of chimpanzees in the trees around an area now called the Gombe Stream National Park.<br><br>
+            How could a young English woman with no scientific training possibly make contact with a group of wild chimpanzees? At first, the animals ran away as soon as they saw her. But maybe because she knew very little about these wild animals, it is highly likely that her calmness gained their trust. It was only later that Jane would learn how dangerous they could be. She saw that different groups of chimpanzees had battles in which they tried to wipe out the rival group. But before this, her studies showed her that the chimpanzees could clearly communicate, allowing them to <u class="target-word">groom</u> and help each other, share food as well as have arguments. Jane pointed out that the animals couldn’t communicate using language like people, but they could communicate by touch and sound. Amazingly, she also realised they could use sign language.<br><br>
+            At this time, people believed that only humans could use tools, but Jane watched chimpanzees using sticks to take ants from a tree, and then used the sticks to feed the ants to their young. Through her work, Jane spelled out to the scientific community for the first time that animals, too, could use tools.<br><br>
+            Jane went on to write a number of books about her work. As well as explaining chimpanzees’ highly developed social behaviour, she taught us that they are omnivores (people used to think they were vegetarian). In 2002, she became a UN Messenger for peace.
+        </div>
+
+        <div id="q-title" class="question-title"></div>
+        <div id="options-box" class="options-container"></div>
+
+        <div style="display: flex; justify-content: space-between;">
+            <button id="prev-btn" class="btn" onclick="prevQ()" disabled>السابق</button>
+            <button id="next-btn" class="btn" onclick="nextQ()">التالي</button>
+        </div>
+    </div>
+
+    <!-- شاشة النتيجة -->
+    <div id="result-screen" class="text-center" style="display: none;">
+        <h2>نتيجة الامتحان</h2>
+        <p>الطالب: <strong id="res-name"></strong></p>
+        <h1 style="font-size: 35px; margin: 15px 0;">النتيجة: <span id="res-score">0</span> / 100</h1>
+        
+        <h3 style="text-align: right; margin-top: 20px;">تفاصيل الإجابات الصحيحة:</h3>
+        <div id="review-box" style="max-height: 300px; overflow-y: auto; margin-top: 10px;"></div>
+    </div>
+
+</div>
+
+<script>
+    // منع الكليك الأيمن والنسخ
+    document.oncontextmenu = function() { return false; };
+    document.oncopy = function() { return false; };
+
+    var rawQuestions = [
+        { q: "When someone asks you to ________ a message to a friend, it means you need to inform them about something.", opts: ["pass on", "make", "establish", "manage"], ans: "pass on" },
+        { q: "It’s essential to __________ contact with clients to ensure they feel valued and informed.", opts: ["carry", "deliver", "establish", "pass on"], ans: "establish" },
+        { q: "Can you please ________ the instructions for me? I didn’t understand them.", opts: ["bring about", "pick up", "spell out", "come across"], ans: "spell out" },
+        { q: "I always try to strike up a ________ when I meet someone new.", opts: ["bond", "conversation", "compliment", "laugh"], ans: "conversation" },
+        { q: "I don’t usually like someone immediately but I really ________ him.", opts: ["strike up", "pick up", "real bond", "took to"], ans: "took to" },
+        { q: "Then the boss asked me to say who I thought was to blame. It was so embarrassing!<br>This sentence means that...", opts: ["the boss insisted on having the last word.", "the boss fired questions at me.", "the boss put me on the spot.", "the boss didn’t get a word in edgeways."], ans: "the boss put me on the spot." },
+        { q: "She talked so much that I didn't manage to say anything at all during lunch.<br>This sentence means that...", opts: ["I jumped down his throat.", "I refused to let anything drop.", "I didn’t get a word in edgeways.", "I put him on the spot."], ans: "I didn’t get a word in edgeways." },
+        { q: "Kareem was <u class='target-word'>thrilled</u> when he found out he'd got a place at university.<br>The adjective that replaces the underlined word is:", opts: ["terrified", "ecstatic", "tense", "devastated"], ans: "ecstatic" },
+        { q: "Randa’s mother was absolutely …………… when she found out that her daughter had cheated in the exam again.", opts: ["ecstatic", "livid", "astonished", "thrilled"], ans: "livid" },
+        { q: "I couldn’t <u class='target-word'>process</u> so much information. The underlined verb (phrase) can be replaced with:", opts: ["take in", "figure out", "come across", "spell out"], ans: "take in" },
+        { q: "The sentence 'He is driving me up the wall!' illustrates: _______", opts: ["annoyance", "sadness", "happiness", "relief"], ans: "annoyance" },
+        { q: "The expression that is NOT associated with sadness is:", opts: ["I’m walking on air!", "I'm feeling a bit blue.", "I'm feeling a bit down in the dumbs.", "I’m heartbroken."], ans: "I’m walking on air!" },
+        { q: "Don't talk to me! I ________ to concentrate at the moment.", opts: ["had tried", "was trying", "am trying", "tried"], ans: "am trying" },
+        { q: "I usually take breaks from my laptop screen ________.", opts: ["already", "in recent years", "right now", "from time to time"], ans: "from time to time" },
+        { q: "I forgot my password and blocked my e-mail account ________.", opts: ["already", "in recent weeks", "the day before yesterday", "since last week"], ans: "the day before yesterday" },
+        { q: "Once in a while , Saleem ________ a new novel.", opts: ["write", "writes", "were writing", "writing"], ans: "writes" },
+        { q: "Landline telephones ________ less and less these days.", opts: ["became", "had become", "are becoming", "was becoming"], ans: "are becoming" },
+        { q: "Let's have our breakfast at the garden,……………?", opts: ["Haven't we", "shall we", "don’t we", "won’t we"], ans: "shall we" },
+        { q: "Actually, nobody has already taken the box,……………?", opts: ["have they", "hasn't he", "haven't they", "don’t they"], ans: "have they" },
+        { q: "He couldn’t fix the table,……………?", opts: ["Can't he", "couldn’t he", "could he", "doesn’t he"], ans: "could he" },
+        { q: "This is an amazing house , -------------------------------------?", opts: ["is it", "isn’t it", "isn’t this", "is this"], ans: "isn’t it" },
+        { q: "A: I am having a great time.<br>B: --------------------------------- ?", opts: ["Are I", "Aren’t I", "Are you", "Aren’t you"], ans: "Are you" },
+        { q: "A: He went to Aqaba last week.<br>B: ----------------------------- ?", opts: ["Did he", "Didn’t he", "Was he", "Wasn’t he"], ans: "Did he" },
+        { q: "I am still at home , --------------------------------------?", opts: ["I am", "I am not", "are I", "aren’t I"], ans: "aren’t I" },
+        { q: "A: Fatima and Sally have arrived.<br>B: -------------------------- ?", opts: ["Have they", "Do they", "Haven’t they", "Don’t they"], ans: "Have they" },
+        { q: "The phrasal verb --------------------------- means 'to destroy something completely'", opts: ["point out", "spell out", "wipe out", "make out"], ans: "wipe out" },
+        { q: "Sharing a house creates a strong…………. between young people at university.", opts: ["impression", "compliment", "bond", "laugh"], ans: "bond" },
+        { q: "You have to learn ------------------------------- different topics in your life.", opts: ["on", "about", "to", "off"], ans: "about" },
+        { q: "The phrase which expresses 'relief' is ----------------------------", opts: ["that is a weight of my mind", "I am feeling a bit blue", "I am worried sick about", "I am walking on air"], ans: "that is a weight of my mind" },
+        { q: "If someone pays you a ____________ , smile and say 'thank you'.", opts: ["bond", "compliment", "conversation", "laugh"], ans: "compliment" },
+        { isText: true, q: "What did Jane observe about the communication methods of the chimpanzees?", opts: ["They communicate by touch, sound, and sign language.", "They communicate using formal spoken language.", "They cannot communicate with each other.", "They only communicate through writing."], ans: "They communicate by touch, sound, and sign language." },
+        { isText: true, q: "What did Jane teach people about the diet of chimpanzees?", opts: ["They are strictly vegetarian.", "They are omnivores.", "They only eat meat.", "They eat only leaves and branches."], ans: "They are omnivores." },
+        { isText: true, q: "What job did Jane get when she arrived in Africa?", opts: ["Observing chimpanzees in the wild.", "Teaching in a school.", "Treating sick animals as a doctor.", "Working in a UN office."], ans: "Observing chimpanzees in the wild." },
+        { isText: true, q: "Find a word in the text which means (brush and clean):", opts: ["groom", "battle", "wipe out", "inspire"], ans: "groom" },
+        { isText: true, q: "What does the underlined word (<u class='target-word'>Here</u>) refer to?", opts: ["Africa", "Lake Tanganyika", "Tanzania", "Gombe Stream National Park"], ans: "Africa" },
+        { isText: true, q: "Quote a sentence from the text which shows that Jane faced difficulties at the beginning of her work:", opts: ["At first, the animals ran away as soon as they saw her.", "Jane loved reading books about a fictional character.", "In 2002, she became a UN Messenger for peace.", "She went with her mother to the shores of Lake Tanganyika."], ans: "At first, the animals ran away as soon as they saw her." }
+    ];
+
+    var examQuestions = [];
+    var curIdx = 0;
+    var answers = [];
+    var stName = "";
+
+    function startExamNow() {
+        var inputVal = document.getElementById('student-name').value;
+        if (!inputVal || inputVal.replace(/\s/g, '') === '') {
+            alert("يرجى كتابة اسمك أولاً لبدء الامتحان!");
+            return;
+        }
+        stName = inputVal;
+
+        // نسخ الأسئلة وتخبيط الترتيب والخيارات
+        examQuestions = rawQuestions.slice();
+        examQuestions.sort(function() { return 0.5 - Math.random(); });
+
+        for (var i = 0; i < examQuestions.length; i++) {
+            var o = examQuestions[i].opts.slice();
+            o.sort(function() { return 0.5 - Math.random(); });
+            
+            var pref = ["A) ", "B) ", "C) ", "D) "];
+            var formOpts = [];
+            for (var j = 0; j < o.length; j++) {
+                formOpts.push(pref[j] + o[j]);
+            }
+            examQuestions[i].currentOpts = o;
+            examQuestions[i].formattedOpts = formOpts;
+            answers.push(null);
+        }
+
+        document.getElementById('st-name-display').innerHTML = stName;
+        document.getElementById('cover-screen').style.display = 'none';
+        document.getElementById('quiz-screen').style.display = 'block';
+        
+        showQ();
+    }
+
+    function showQ() {
+        var item = examQuestions[curIdx];
+
+        if (item.isText) {
+            document.getElementById('reading-text').style.display = 'block';
+        } else {
+            document.getElementById('reading-text').style.display = 'none';
+        }
+
+        document.getElementById('q-num').innerHTML = curIdx + 1;
+        document.getElementById('q-title').innerHTML = (curIdx + 1) + "- " + item.q;
+
+        var box = document.getElementById('options-box');
+        box.innerHTML = '';
+
+        for (var i = 0; i < item.formattedOpts.length; i++) {
+            var b = document.createElement('button');
+            b.className = 'option-btn' + (answers[curIdx] === i ? ' selected' : '');
+            b.innerHTML = item.formattedOpts[i];
+            b.setAttribute('data-idx', i);
+            b.onclick = function() {
+                var selectedIdx = parseInt(this.getAttribute('data-idx'));
+                answers[curIdx] = selectedIdx;
+                showQ();
+            };
+            box.appendChild(b);
+        }
+
+        document.getElementById('prev-btn').disabled = (curIdx === 0);
+        if (curIdx === examQuestions.length - 1) {
+            document.getElementById('next-btn').innerHTML = "إنهاء الامتحان";
+        } else {
+            document.getElementById('next-btn').innerHTML = "التالي";
+        }
+
+        document.getElementById('p-bar').style.width = (((curIdx + 1) / examQuestions.length) * 100) + "%";
+    }
+
+    function nextQ() {
+        if (curIdx < examQuestions.length - 1) {
+            curIdx++;
+            showQ();
+        } else {
+            finishExam();
+        }
+    }
+
+    function prevQ() {
+        if (curIdx > 0) {
+            curIdx--;
+            showQ();
+        }
+    }
+
+    function finishExam() {
+        document.getElementById('quiz-screen').style.display = 'none';
+        document.getElementById('result-screen').style.display = 'block';
+        document.getElementById('res-name').innerHTML = stName;
+
+        var score = 0;
+        var revBox = document.getElementById('review-box');
+        revBox.innerHTML = '';
+
+        for (var i = 0; i < examQuestions.length; i++) {
+            var item = examQuestions[i];
+            var uAnsIdx = answers[i];
+            var uAnsText = (uAnsIdx !== null) ? item.currentOpts[uAnsIdx] : null;
+            
+            var isRight = (uAnsText === item.ans);
+            if (isRight) score++;
+
+            var d = document.createElement('div');
+            d.className = 'review-item ' + (isRight ? 'correct' : 'incorrect');
+            
+            var myAnsDisplay = (uAnsIdx !== null) ? item.formattedOpts[uAnsIdx] : "لم يتم الإجابة";
+            
+            var rightFormatted = "";
+            for (var j = 0; j < item.currentOpts.length; j++) {
+                if (item.currentOpts[j] === item.ans) {
+                    rightFormatted = item.formattedOpts[j];
+                }
+            }
+
+            d.innerHTML = '<div><strong>س ' + (i + 1) + ':</strong> ' + item.q + '</div>' +
+                '<div style="color: ' + (isRight ? 'green' : 'red') + '; margin-top:5px;">إجابتك: ' + myAnsDisplay + '</div>' +
+                (!isRight ? '<div style="color: green;">الإجابة الصحيحة: ' + rightFormatted + '</div>' : '');
+            
+            revBox.appendChild(d);
+        }
+
+        var finalGrade = Math.round((score / examQuestions.length) * 100);
+        document.getElementById('res-score').innerHTML = finalGrade;
+    }
+</script>
+
+</body>
+</html>
